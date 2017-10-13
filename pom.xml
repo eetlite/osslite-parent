@@ -55,7 +55,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.7.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -122,7 +122,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
                 <executions>
                     <execution>
                         <id>default-compile</id>
@@ -141,6 +140,12 @@
                     <jdkToolchain>
                         <version>9</version>
                     </jdkToolchain>
+                    <compilerArgs>
+                        <arg>-p</arg>
+                        <arg>${project.build.directory}/dependencies:${java.home}/jmods</arg>
+                        <arg>--add-modules</arg>
+                        <arg>java.xml.bind,java.xml.ws</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
