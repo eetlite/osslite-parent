@@ -47,6 +47,52 @@
     <build>
         <finalName>${project.name}-${project.version}</finalName>
 
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- jdkToolchain required when JAVA_HOME is JDK 9 or above -->
+                    <jdkToolchain>
+                        <version>9</version>
+                    </jdkToolchain>
+                    <compilerArgs>
+                        <!--<arg>- -module-path</arg>-->
+                        <!--<arg>${project.build.directory}/dependencies:${java.home}/jmods</arg>-->
+                        <arg>--add-modules</arg>
+                        <!--<arg>java.xml.bind,java.xml.ws</arg>-->
+                        <arg>ALL-SYSTEM,jdk.compiler,java.compiler,java.se,java.xml.ws.annotation</arg>
+                        <!--<arg>-J&#45;&#45;add-exports:</arg>-->
+                        <!--<arg>jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                    </compilerArgs>
+                    <release>9</release>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <pushChanges>true</pushChanges>
+                    <scmCommentPrefix>[maven-release-plugin]</scmCommentPrefix>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                </configuration>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -76,12 +122,12 @@
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
-                            <version>1.10.0</version>
+                            <version>1.10.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant-launcher</artifactId>
-                            <version>1.10.0</version>
+                            <version>1.10.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -112,48 +158,6 @@
             </plugins>
         </pluginManagement>
 
-        <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <pushChanges>true</pushChanges>
-                    <scmCommentPrefix>[maven-release-plugin]</scmCommentPrefix>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <configuration>
-                            <!-- compile everything to ensure module-info contains right entries -->
-                            <!-- required when JAVA_HOME is JDK 8 or below -->
-                            <jdkToolchain>
-                                <version>9</version>
-                            </jdkToolchain>
-                            <release>9</release>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- jdkToolchain required when JAVA_HOME is JDK 9 or above -->
-                    <jdkToolchain>
-                        <version>9</version>
-                    </jdkToolchain>
-                    <compilerArgs>
-                        <arg>-p</arg>
-                        <arg>${project.build.directory}/dependencies:${java.home}/jmods</arg>
-                        <arg>--add-modules</arg>
-                        <arg>java.xml.bind,java.xml.ws</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
     <dependencyManagement>
@@ -246,7 +250,30 @@
                 </plugins>
             </build>
         </profile>
-
+        <profile>
+            <id>test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <echoproperties/>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>
