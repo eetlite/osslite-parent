@@ -23,12 +23,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 
-        <java.version>9</java.version>
+        <java.version>8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.debug>false</maven.compiler.debug>
         <maven.compiler.verbose>false</maven.compiler.verbose>
         <maven.compiler.debuglevel>source</maven.compiler.debuglevel>
+
+        <junit.platform.version>1.0.1</junit.platform.version>
+        <junit.version>4.12</junit.version>
+        <junit.jupiter.version>5.0.1</junit.jupiter.version>
+        <junit.vintage.version>${junit.version}.1</junit.vintage.version>
     </properties>
 
     <distributionManagement>
@@ -52,15 +57,19 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <!-- jdkToolchain required when JAVA_HOME is JDK 9 or above -->
-                    <jdkToolchain>
-                        <version>9</version>
-                    </jdkToolchain>
+                    <!--zapnout posleze-->
+                    <!--<jdkToolchain>-->
+                    <!--<version>9</version>-->
+                    <!--</jdkToolchain>-->
                     <compilerArgs>
                         <!--<arg>- -module-path</arg>-->
                         <!--<arg>${project.build.directory}/dependencies:${java.home}/jmods</arg>-->
-                        <arg>--add-modules</arg>
+
+                        <!--zapnout posleze-->
+                        <!--<arg>&#45;&#45;add-modules</arg>-->
+                        <!--<arg>ALL-SYSTEM,jdk.compiler,java.compiler,java.se,java.xml.ws.annotation</arg>-->
+
                         <!--<arg>java.xml.bind,java.xml.ws</arg>-->
-                        <arg>ALL-SYSTEM,jdk.compiler,java.compiler,java.se,java.xml.ws.annotation</arg>
                         <!--<arg>-J&#45;&#45;add-exports:</arg>-->
                         <!--<arg>jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED,jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
                         <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
@@ -72,9 +81,13 @@
                         <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
                         <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
                         <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
-                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+
+                        <!--zapnout posleze-->
+                        <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
                     </compilerArgs>
-                    <release>9</release>
+                    <!--zapnout posleze-->
+                    <!-- java 9 argument-->
+                    <!--<release>9</release>-->
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
@@ -90,6 +103,33 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/Test*.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
+                    </includes>
+                    <properties>
+                        <!-- <includeTags>fast</includeTags> -->
+                        <excludeTags>slow</excludeTags>
+                        <!--
+                        <configurationParameters>
+                            junit.jupiter.conditions.deactivate = *
+                        </configurationParameters>
+                        -->
+                    </properties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>${junit.platform.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
 
@@ -164,6 +204,41 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Only required to run tests in an IDE that bundles an older version -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Only required to run tests in an IDE that bundles an older version -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Only required to run tests in an IDE that bundles an older version -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.vintage.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- To avoid compiler warnings about @API annotations in JUnit code -->
+        <dependency>
+            <groupId>org.apiguardian</groupId>
+            <artifactId>apiguardian-api</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <profiles>
