@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.7.RELEASE</version>
+        <version>1.5.8.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -31,9 +31,8 @@
         <maven.compiler.debuglevel>source</maven.compiler.debuglevel>
 
         <junit.platform.version>1.0.1</junit.platform.version>
-        <junit.version>4.12</junit.version>
         <junit.jupiter.version>5.0.1</junit.jupiter.version>
-        <junit.vintage.version>${junit.version}.1</junit.vintage.version>
+        <junit.vintage.version>4.12.1</junit.vintage.version>
     </properties>
 
     <distributionManagement>
@@ -201,6 +200,14 @@
     </build>
 
     <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>5.0.1.RELEASE</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <dependencies>
